@@ -1,0 +1,751 @@
+/* ==========================================================================
+   Aether Obsidian: a Video.js v10 skin
+   Matte obsidian glass, one cyan-to-indigo light on the playhead.
+   Everything is driven by Video.js data attributes and CSS custom properties.
+   ========================================================================== */
+
+.aether {
+  --a-bg: #0b0d11;
+  --a-glass: rgb(11 13 17 / 0.74);
+  --a-glass-solid: rgb(11 13 17 / 0.94);
+  --a-border: rgb(255 255 255 / 0.08);
+  --a-text: #f4f6fa;
+  --a-muted: rgb(244 246 250 / 0.72);
+  --a-accent: #38bdf8;
+  --a-accent-2: #6366f1;
+  --a-focus: #22d3ee;
+  --a-btn: 44px;
+  --a-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--a-bg);
+  color: var(--a-text);
+  border: 1px solid var(--a-border);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px -20px rgb(0 0 0 / 0.7);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  container: aether / inline-size;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.aether:focus-visible {
+  outline: 2px solid var(--a-focus);
+  outline-offset: -2px;
+}
+
+.aether:fullscreen,
+.aether:-webkit-full-screen {
+  --a-btn: 48px;
+  border-radius: 0;
+  border: 0;
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+}
+
+@media (pointer: coarse) {
+  .aether {
+    --a-btn: 48px;
+  }
+}
+
+.aether video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* ---------- Poster and first-play button ---------------------------------- */
+
+.aether-poster {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background: var(--a-bg);
+  transition: opacity 0.3s var(--a-ease);
+}
+.aether-poster:not([data-visible]) {
+  opacity: 0;
+}
+.aether-poster-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.aether-big {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border: 1px solid var(--a-border);
+  border-radius: 9999px;
+  background: var(--a-glass);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  color: var(--a-text);
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 0 0 0 rgb(56 189 248 / 0.4), 0 12px 40px rgb(0 0 0 / 0.5);
+  transition: transform 0.2s var(--a-ease), box-shadow 0.2s var(--a-ease);
+}
+.aether-big svg {
+  width: 36px;
+  height: 36px;
+  margin-left: 3px;
+}
+.aether-big:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 8px rgb(56 189 248 / 0.18), 0 12px 40px rgb(0 0 0 / 0.5);
+}
+.aether-big:focus-visible {
+  outline: 2px solid var(--a-focus);
+  outline-offset: 4px;
+}
+.aether-poster:not([data-visible]) .aether-big {
+  pointer-events: none;
+}
+
+/* ---------- Buffering ------------------------------------------------------ */
+
+.aether-buffering {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.aether-spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  border: 3px solid rgb(255 255 255 / 0.2);
+  border-top-color: var(--a-accent);
+  filter: drop-shadow(0 0 8px rgb(56 189 248 / 0.5));
+  animation: aether-spin 0.8s linear infinite;
+}
+@keyframes aether-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Center status pulse and seek feedback -------------------------- */
+
+.aether-status,
+.aether-seekind {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--a-text);
+  background: var(--a-glass);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--a-border);
+  border-radius: 9999px;
+  pointer-events: none;
+  transition: opacity 0.18s var(--a-ease), scale 0.18s var(--a-ease);
+}
+.aether-status[data-starting-style],
+.aether-status[data-ending-style],
+.aether-seekind[data-starting-style],
+.aether-seekind[data-ending-style] {
+  opacity: 0;
+  scale: 0.82;
+}
+
+.aether-status {
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  min-width: 76px;
+  height: 76px;
+  padding: 0 22px;
+}
+.aether-status svg {
+  display: none;
+  width: 32px;
+  height: 32px;
+}
+.aether-status[data-status="play"] .s-play,
+.aether-status[data-status="pause"] .s-pause,
+.aether-status[data-status="volume-low"] .s-vol,
+.aether-status[data-status="volume-high"] .s-vol,
+.aether-status[data-status="volume-off"] .s-mute {
+  display: block;
+}
+.aether-status-value {
+  font: 600 15px var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.aether-status[data-status="play"] .aether-status-value,
+.aether-status[data-status="pause"] .aether-status-value {
+  display: none;
+}
+
+.aether-seekind {
+  top: 50%;
+  translate: 0 -50%;
+  height: 56px;
+  padding: 0 20px;
+}
+.aether-seekind[data-direction="backward"] {
+  left: 7%;
+}
+.aether-seekind[data-direction="forward"] {
+  right: 7%;
+}
+.aether-seekind svg {
+  display: none;
+  width: 24px;
+  height: 24px;
+}
+.aether-seekind[data-direction="backward"] .si-back,
+.aether-seekind[data-direction="forward"] .si-fwd {
+  display: block;
+}
+.aether-seekind-value {
+  font: 600 14px var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Controls layer -------------------------------------------------- */
+
+.aether-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgb(0 0 0 / 0.7), transparent 40%),
+    linear-gradient(to bottom, rgb(0 0 0 / 0.5), transparent 22%);
+  transition: opacity 0.35s var(--a-ease);
+}
+.aether-backdrop:not([data-visible]) {
+  opacity: 0;
+}
+
+.aether-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  pointer-events: none;
+  transition: opacity 0.25s var(--a-ease);
+}
+/* Controls stay up while keyboard focus is inside them or a menu is open. */
+.aether-controls:not([data-visible]):not(:has(:focus-visible)):not(:has([aria-expanded="true"])) {
+  opacity: 0;
+}
+.aether-controls:not([data-visible]):not(:has(:focus-visible)):not(:has([aria-expanded="true"])) .aether-dock {
+  pointer-events: none;
+}
+
+.aether-top {
+  display: flex;
+  min-height: 24px;
+  padding: 2px 8px;
+}
+.aether-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.6);
+}
+
+/* ---------- The floating dock ----------------------------------------------- */
+
+.aether-dock {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "left seek tools";
+  align-items: center;
+  column-gap: 14px;
+  padding: 6px 12px 6px 6px;
+  background: var(--a-glass);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  border: 1px solid var(--a-border);
+  border-radius: 9999px;
+  box-shadow:
+    0 14px 44px rgb(0 0 0 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.aether-left {
+  grid-area: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.aether-tools {
+  grid-area: tools;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+@container aether (max-width: 640px) {
+  .aether-controls {
+    padding: 10px;
+  }
+  .aether-dock {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "seek seek"
+      "left tools";
+    row-gap: 0;
+    padding: 4px 10px 8px 8px;
+    border-radius: 28px;
+  }
+  .aether-big {
+    width: 68px;
+    height: 68px;
+  }
+}
+
+/* ---------- Buttons ------------------------------------------------------------ */
+
+.aether-btn,
+.aether-speed {
+  display: inline-grid;
+  place-items: center;
+  height: var(--a-btn);
+  min-width: var(--a-btn);
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--a-text);
+  cursor: pointer;
+  transition: background-color 0.15s var(--a-ease), transform 0.15s var(--a-ease);
+}
+.aether-btn svg {
+  width: 22px;
+  height: 22px;
+}
+.aether-btn:hover,
+.aether-speed:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+.aether-btn:active,
+.aether-speed:active {
+  transform: scale(0.94);
+}
+.aether-btn[data-hidden],
+.aether-btn[hidden] {
+  display: none;
+}
+
+/* Every interactive element gets the same unambiguous cyan ring. */
+.aether-btn:focus-visible,
+.aether-speed:focus-visible,
+.aether-menu-item:focus-visible,
+.aether-error-close:focus-visible,
+.aether-knob:focus-visible {
+  outline: 2px solid var(--a-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgb(34 211 238 / 0.22);
+}
+
+/* Play: solid light disc for the strongest contrast on any footage. */
+.aether-play {
+  background: var(--a-text);
+  color: var(--a-bg);
+}
+.aether-play:hover {
+  background: #ffffff;
+}
+.aether-play svg {
+  width: 20px;
+  height: 20px;
+}
+.aether-play .ico-play,
+.aether-play .ico-pause {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.18s var(--a-ease), transform 0.22s var(--a-ease);
+}
+.aether-play:not([data-paused]) .ico-play {
+  opacity: 0;
+  transform: scale(0.55) rotate(-24deg);
+}
+.aether-play[data-paused] .ico-pause {
+  opacity: 0;
+  transform: scale(0.55);
+}
+
+/* ---------- Timecode ------------------------------------------------------------ */
+
+.aether-time {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--a-muted);
+}
+.aether-time [data-type="current"] {
+  color: var(--a-text);
+}
+
+/* ---------- Sliders (seek and volume) ---------------------------------------------- */
+
+.aether-sl {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  cursor: pointer;
+  touch-action: none;
+}
+.aether-seek {
+  grid-area: seek;
+  min-width: 0;
+}
+
+.aether-track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.2);
+  transition: height 0.15s var(--a-ease);
+}
+.aether-sl[data-interactive] .aether-track {
+  height: 6px;
+}
+.aether-buffer,
+.aether-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: inherit;
+}
+.aether-buffer {
+  width: var(--media-slider-buffer);
+  background: rgb(255 255 255 / 0.28);
+}
+.aether-fill {
+  width: var(--media-slider-fill);
+  background: linear-gradient(90deg, var(--a-accent-2), var(--a-accent));
+  box-shadow: 0 0 14px rgb(56 189 248 / 0.6);
+}
+.aether-seek[data-dragging] .aether-fill {
+  width: var(--media-slider-pointer);
+}
+
+.aether-knob {
+  position: absolute;
+  top: 50%;
+  left: var(--media-slider-fill);
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 4px rgb(56 189 248 / 0.3),
+    0 2px 8px rgb(0 0 0 / 0.5);
+  translate: -50% -50%;
+  scale: 0;
+  transition: scale 0.15s var(--a-ease);
+}
+.aether-sl[data-interactive] .aether-knob,
+.aether-sl:has(:focus-visible) .aether-knob {
+  scale: 1;
+}
+.aether-seek[data-dragging] .aether-knob {
+  left: var(--media-slider-pointer);
+  scale: 1.15;
+}
+
+/* Hover preview: frame from the Mux storyboard plus a timestamp bubble. */
+.aether-preview {
+  --half: 84px;
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: clamp(var(--half), var(--media-slider-pointer), calc(100% - var(--half)));
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s var(--a-ease);
+}
+.aether-seek[data-pointing] .aether-preview,
+.aether-seek[data-dragging] .aether-preview {
+  opacity: 1;
+}
+.aether-frame {
+  position: relative;
+  display: block;
+  width: auto;
+  min-width: 0;
+  max-width: 168px;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 12px;
+  background: var(--a-bg);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.55);
+}
+.aether-frame[data-hidden] {
+  display: none;
+}
+.aether-frame-img {
+  display: block;
+}
+.aether-bubble {
+  padding: 3px 9px;
+  border: 1px solid var(--a-border);
+  border-radius: 9999px;
+  background: var(--a-glass-solid);
+  color: var(--a-text);
+  font: 500 12px var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Volume: slides open on hover or focus, with a percentage bubble. */
+.aether-volume {
+  display: flex;
+  align-items: center;
+}
+.aether-vol {
+  width: 0;
+  margin-inline-start: 0;
+  opacity: 0;
+  overflow: visible;
+  pointer-events: none;
+  transition:
+    width 0.25s var(--a-ease),
+    margin 0.25s var(--a-ease),
+    opacity 0.2s var(--a-ease);
+}
+.aether-volume:hover .aether-vol,
+.aether-volume:focus-within .aether-vol {
+  width: 88px;
+  margin-inline: 4px 10px;
+  opacity: 1;
+  pointer-events: auto;
+}
+.aether-vol-preview {
+  position: absolute;
+  bottom: calc(100% - 2px);
+  left: var(--media-slider-pointer);
+  translate: -50% 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s var(--a-ease);
+}
+.aether-vol[data-pointing] .aether-vol-preview,
+.aether-vol[data-dragging] .aether-vol-preview {
+  opacity: 1;
+}
+@media (pointer: coarse) {
+  .aether-vol {
+    display: none;
+  }
+}
+
+/* ---------- Speed menu --------------------------------------------------------------- */
+
+.aether-speed {
+  padding: 0 12px;
+  font: 600 13px var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.aether-menu {
+  --media-menu-side-offset: 14px;
+  box-sizing: border-box;
+  min-width: 156px;
+  padding: 6px;
+  margin: 0;
+  border: 1px solid var(--a-border);
+  border-radius: 18px;
+  background: var(--a-glass-solid);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  color: var(--a-text);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 0.6);
+  transition: opacity 0.16s var(--a-ease), translate 0.16s var(--a-ease);
+}
+.aether-menu[data-starting-style],
+.aether-menu[data-ending-style] {
+  opacity: 0;
+  translate: 0 6px;
+}
+.aether-menu-content,
+.aether-menu-group {
+  display: grid;
+  gap: 2px;
+  outline: none;
+}
+.aether-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font: 500 14px var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  outline: none;
+}
+.aether-menu-item[data-highlighted] {
+  background: rgb(255 255 255 / 0.1);
+}
+.aether-menu-check {
+  display: grid;
+  color: var(--a-accent);
+  opacity: 0;
+}
+.aether-menu-item[aria-checked="true"] {
+  color: var(--a-accent);
+}
+.aether-menu-item[aria-checked="true"] .aether-menu-check {
+  opacity: 1;
+}
+
+/* ---------- Tooltips ------------------------------------------------------------------- */
+
+.aether-tip {
+  --media-tooltip-side-offset: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  margin: 0;
+  border: 1px solid var(--a-border);
+  border-radius: 10px;
+  background: var(--a-glass-solid);
+  color: var(--a-text);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.14s var(--a-ease);
+}
+.aether-tip[data-starting-style],
+.aether-tip[data-ending-style] {
+  opacity: 0;
+}
+.aether-kbd {
+  padding: 1px 6px;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.08);
+  color: var(--a-muted);
+  font: 500 11px var(--font-mono), ui-monospace, monospace;
+}
+@media (pointer: coarse) {
+  .aether-tip {
+    display: none;
+  }
+}
+
+/* ---------- Error dialog ------------------------------------------------------------------ */
+
+.aether-error {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 24px;
+  background: rgb(11 13 17 / 0.92);
+  text-align: center;
+}
+.aether-error:not([data-open]) {
+  display: none;
+}
+.aether-error-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+.aether-error-text {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--a-muted);
+  font-size: 14px;
+}
+.aether-error-close {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--a-text);
+  color: var(--a-bg);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- Reduced motion: calm, not frozen ------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .aether *,
+  .aether *::before,
+  .aether *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .aether-status,
+  .aether-seekind {
+    transition: none !important;
+  }
+  .aether-spinner {
+    border-top-color: var(--a-accent);
+    border-right-color: var(--a-accent);
+  }
+}
+
+/* ---------- Forced colors (Windows high contrast) -------------------------------------------- */
+
+@media (forced-colors: active) {
+  .aether-dock,
+  .aether-menu,
+  .aether-tip,
+  .aether-bubble {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+  .aether-fill {
+    background: Highlight;
+    box-shadow: none;
+  }
+  .aether-btn:focus-visible,
+  .aether-speed:focus-visible,
+  .aether-knob:focus-visible {
+    outline: 2px solid Highlight;
+  }
+}

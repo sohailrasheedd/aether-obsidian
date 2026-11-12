@@ -8,8 +8,8 @@ const title = process.env.NEXT_PUBLIC_VIDEO_TITLE || "Aether Obsidian";
 /** Chrome-free page for embedding in an iframe on a portfolio or production site. */
 export default function EmbedPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-[#0B0D11] p-0">
-      <div className="w-full max-w-[1280px]">
+    <main className="w-full h-full min-h-dvh flex items-center justify-center bg-[#0B0D11] p-0 overflow-hidden">
+      <div className="w-full h-full max-w-[1280px]">
         <AetherPlayer playbackId={playbackId} title={title} hotkeyTarget="document" />
       </div>
     </main>

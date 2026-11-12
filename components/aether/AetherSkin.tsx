@@ -235,7 +235,7 @@ export function AetherSkin({ children, title, hotkeyTarget = "player" }: AetherS
 
                 <Tip shortcut="I">
                   <PiPButton
-                    className="aether-btn"
+                    className="aether-btn aether-pip"
                     render={(props) => (
                       <button {...props}>
                         <PipIcon />
@@ -246,7 +246,7 @@ export function AetherSkin({ children, title, hotkeyTarget = "player" }: AetherS
 
                 <Tip shortcut="F">
                   <FullscreenButton
-                    className="aether-btn"
+                    className="aether-btn aether-fs"
                     render={(props, state) => (
                       <button {...props}>
                         {state.fullscreen ? <FullscreenExitIcon /> : <FullscreenEnterIcon />}

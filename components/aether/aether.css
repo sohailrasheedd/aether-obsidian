@@ -307,11 +307,14 @@
 @container aether (max-width: 640px) {
   .aether {
     --a-btn: 28px;
+    border-radius: 12px;
   }
   .aether-controls {
     --a-btn: 28px;
     padding: 0;
     justify-content: flex-end;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   .aether-top {
     position: absolute;
@@ -320,6 +323,7 @@
     right: 8px;
     min-height: 18px;
     padding: 0;
+    pointer-events: none;
   }
   .aether-title {
     font-size: 11px;
@@ -327,13 +331,14 @@
   }
   .aether-dock {
     width: 100%;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-areas: "left seek tools";
     align-items: center;
     column-gap: 8px;
     row-gap: 0;
-    padding: 6px 10px;
+    padding: 6px 10px max(6px, env(safe-area-inset-bottom, 6px)) 10px;
     border-radius: 0;
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -346,6 +351,11 @@
     display: flex;
     align-items: center;
     gap: 6px;
+  }
+  .aether-tools {
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
   .aether-sl {
     height: 16px;
@@ -378,6 +388,7 @@
 @container aether (max-width: 480px) {
   .aether {
     --a-btn: 24px;
+    border-radius: 8px;
   }
   .aether-controls {
     --a-btn: 24px;
@@ -395,7 +406,7 @@
   }
   .aether-dock {
     column-gap: 6px;
-    padding: 4px 8px;
+    padding: 4px 8px max(4px, env(safe-area-inset-bottom, 4px)) 8px;
     border-radius: 0;
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -436,11 +447,14 @@
 @media (max-width: 640px) {
   .aether {
     --a-btn: 28px !important;
+    border-radius: 12px;
   }
   .aether-controls {
     --a-btn: 28px !important;
     padding: 0 !important;
     justify-content: flex-end !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
   .aether-top {
     position: absolute !important;
@@ -449,32 +463,119 @@
     right: 8px !important;
     min-height: 18px !important;
     padding: 0 !important;
+    pointer-events: none !important;
   }
   .aether-dock {
     width: 100% !important;
+    box-sizing: border-box !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    grid-template-areas: "left seek tools" !important;
+    align-items: center !important;
+    column-gap: 8px !important;
+    row-gap: 0 !important;
     border-radius: 0 !important;
     border: none !important;
     border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     background: linear-gradient(to top, rgba(11, 13, 17, 0.96) 0%, rgba(11, 13, 17, 0.78) 75%, transparent 100%) !important;
     box-shadow: none !important;
-    padding: 6px 10px !important;
+    padding: 6px 10px max(6px, env(safe-area-inset-bottom, 6px)) 10px !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    backdrop-filter: blur(16px) !important;
+  }
+  .aether-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .aether-tools {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .aether-sl {
+    height: 16px !important;
+  }
+  .aether-track {
+    height: 3px !important;
+  }
+  .aether-btn svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+  .aether-play svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+  .aether-time {
+    font-size: 10.5px !important;
+    gap: 2px !important;
+  }
+  .aether-big {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  .aether-big svg {
+    width: 22px !important;
+    height: 22px !important;
   }
 }
 
 @media (max-width: 480px) {
   .aether {
     --a-btn: 24px !important;
+    border-radius: 8px;
   }
   .aether-controls {
     --a-btn: 24px !important;
+    padding: 0 !important;
+    justify-content: flex-end !important;
+  }
+  .aether-top {
+    top: 4px !important;
+    left: 6px !important;
+    right: 6px !important;
+    min-height: 14px !important;
+  }
+  .aether-title {
+    font-size: 10px !important;
   }
   .aether-dock {
-    padding: 4px 8px !important;
+    column-gap: 6px !important;
+    padding: 4px 8px max(4px, env(safe-area-inset-bottom, 4px)) 8px !important;
+    border-radius: 0 !important;
+    border: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+  .aether-sl {
+    height: 14px !important;
+  }
+  .aether-track {
+    height: 2.5px !important;
   }
   .aether-volume,
   .aether-speed,
   .aether-pip {
     display: none !important;
+  }
+  .aether-btn svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+  .aether-play svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+  .aether-time {
+    font-size: 9px !important;
+  }
+  .aether-big {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .aether-big svg {
+    width: 18px !important;
+    height: 18px !important;
   }
 }
 

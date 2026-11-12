@@ -49,7 +49,7 @@
   height: 100%;
 }
 
-@media (pointer: coarse) {
+@media (pointer: coarse) and (min-width: 641px) {
   .aether {
     --a-btn: 48px;
   }
@@ -305,21 +305,42 @@
 }
 
 @container aether (max-width: 640px) {
+  .aether {
+    --a-btn: 28px;
+  }
   .aether-controls {
     --a-btn: 28px;
-    padding: 6px 8px;
+    padding: 0;
+    justify-content: flex-end;
+  }
+  .aether-top {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    right: 8px;
+    min-height: 18px;
+    padding: 0;
+  }
+  .aether-title {
+    font-size: 11px;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
   }
   .aether-dock {
+    width: 100%;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-areas: "left seek tools";
     align-items: center;
     column-gap: 8px;
     row-gap: 0;
-    padding: 2px 8px 2px 4px;
-    border-radius: 9999px;
-    background: rgb(11 13 17 / 0.82);
-    box-shadow: 0 4px 16px rgb(0 0 0 / 0.5);
+    padding: 6px 10px;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(to top, rgba(11, 13, 17, 0.96) 0%, rgba(11, 13, 17, 0.78) 75%, transparent 100%);
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
   }
   .aether-left {
     display: flex;
@@ -344,23 +365,40 @@
     font-size: 10.5px;
     gap: 2px;
   }
-  .aether-top {
-    min-height: 18px;
-    padding: 0 4px;
+  .aether-big {
+    width: 48px;
+    height: 48px;
   }
-  .aether-title {
-    font-size: 11.5px;
+  .aether-big svg {
+    width: 22px;
+    height: 22px;
   }
 }
 
 @container aether (max-width: 480px) {
+  .aether {
+    --a-btn: 24px;
+  }
   .aether-controls {
-    --a-btn: 26px;
-    padding: 4px 6px;
+    --a-btn: 24px;
+    padding: 0;
+    justify-content: flex-end;
+  }
+  .aether-top {
+    top: 4px;
+    left: 6px;
+    right: 6px;
+    min-height: 14px;
+  }
+  .aether-title {
+    font-size: 10px;
   }
   .aether-dock {
     column-gap: 6px;
-    padding: 2px 6px 2px 3px;
+    padding: 4px 8px;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
   .aether-sl {
     height: 14px;
@@ -374,21 +412,69 @@
     display: none !important;
   }
   .aether-btn svg {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
   }
   .aether-play svg {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
   .aether-time {
-    font-size: 9.5px;
+    font-size: 9px;
+  }
+  .aether-big {
+    width: 40px;
+    height: 40px;
+  }
+  .aether-big svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Viewport fallback for mobile iframes */
+@media (max-width: 640px) {
+  .aether {
+    --a-btn: 28px !important;
+  }
+  .aether-controls {
+    --a-btn: 28px !important;
+    padding: 0 !important;
+    justify-content: flex-end !important;
   }
   .aether-top {
-    min-height: 14px;
+    position: absolute !important;
+    top: 6px !important;
+    left: 8px !important;
+    right: 8px !important;
+    min-height: 18px !important;
+    padding: 0 !important;
   }
-  .aether-title {
-    font-size: 10.5px;
+  .aether-dock {
+    width: 100% !important;
+    border-radius: 0 !important;
+    border: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: linear-gradient(to top, rgba(11, 13, 17, 0.96) 0%, rgba(11, 13, 17, 0.78) 75%, transparent 100%) !important;
+    box-shadow: none !important;
+    padding: 6px 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .aether {
+    --a-btn: 24px !important;
+  }
+  .aether-controls {
+    --a-btn: 24px !important;
+  }
+  .aether-dock {
+    padding: 4px 8px !important;
+  }
+  .aether-volume,
+  .aether-speed,
+  .aether-pip {
+    display: none !important;
   }
 }
 
